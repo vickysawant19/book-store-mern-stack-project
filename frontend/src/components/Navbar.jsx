@@ -7,6 +7,7 @@ import { Link, NavLink } from "react-router-dom";
 import avatorImg from "../assets/avatar.png";
 import { useSelector } from "react-redux";
 import { selectCart } from "../Redux/cart/cartSlice";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
@@ -30,7 +31,11 @@ const Navbar = () => {
       href: "/checkout",
     },
   ];
-  const currentUser = false;
+  const { currentUser, logoutUser } = useAuth();
+
+  const handleLogout = async () => {
+    await logoutUser();
+  };
 
   return (
     <nav className="max-w-screen-xl mx-auto py-6 px-4">
@@ -55,20 +60,25 @@ const Navbar = () => {
           <div className="flex flex-col">
             {currentUser ? (
               <>
-                <button onClick={() => setIsDropDownOpen(!isDropDownOpen)}>
-                  <img
-                    src={avatorImg}
-                    className={`size-7 rounded-full ${
-                      currentUser ? "ring-2 ring-orange-500" : ""
-                    }`}
-                  />
-                </button>
+                <div className="flex space-x-4">
+                  <button onClick={() => setIsDropDownOpen(!isDropDownOpen)}>
+                    <img
+                      src={avatorImg}
+                      className={`size-7 rounded-full ${
+                        currentUser ? "ring-2 ring-orange-500" : ""
+                      }`}
+                    />
+                  </button>
+                </div>
                 {isDropDownOpen && (
                   <>
                     <div className="bg-white w-48 rounded-md absolute right-0 mt-8 z-40 shadow-lg ">
                       <ul className="py-2">
                         {navObj.map((item) => (
-                          <li onClick={() => setIsDropDownOpen(false)}>
+                          <li
+                            key={item.name}
+                            onClick={() => setIsDropDownOpen(false)}
+                          >
                             <NavLink
                               className="block px-4 py-2 text-sm hover:bg-gray-100"
                               key={item.name}
@@ -78,6 +88,14 @@ const Navbar = () => {
                             </NavLink>
                           </li>
                         ))}
+                        <li>
+                          <button
+                            onClick={handleLogout}
+                            className="bg-red-400 px-4 ml-4 mt-2 block py-1 rounded text-white font-semibold hover:bg-red-600"
+                          >
+                            Logout
+                          </button>
+                        </li>
                       </ul>
                     </div>
                   </>

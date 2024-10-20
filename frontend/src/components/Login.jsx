@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FaGoogle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const [message, setMessage] = useState("");
@@ -12,11 +13,23 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const { loginUser, signInWithGoogle } = useAuth();
+
+  const onSubmit = async (data) => {
+    try {
+      await loginUser(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const handleGoogelLogin = () => {};
+  const handleGoogelLogin = async () => {
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="h-[calc(100vh-120px)] flex justify-center items-center ">

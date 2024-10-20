@@ -10,17 +10,13 @@ import "swiper/css/pagination";
 // import required modules
 import { Navigation, Pagination } from "swiper/modules";
 import BookCard from "../Book/BookCard";
+import { useGetBooksQuery } from "../../Redux/books/bookApi";
 
 const Topsell = () => {
-  const [books, setBooks] = useState([]);
+  const { data: books = [], isLoading } = useGetBooksQuery();
+
   const [category, setCategory] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
-
-  useEffect(() => {
-    fetch("data/books.json")
-      .then((res) => res.json())
-      .then((data) => setBooks(data));
-  }, []);
 
   useEffect(() => {
     if (books.length === 0) return;

@@ -9,7 +9,6 @@ const bookSchema = new mongoose.Schema(
     coverImage: { type: String, required: true },
     oldPrice: { type: Number, required: true },
     newPrice: { type: Number, required: true },
-    createdAt: { type: Date, required: false },
   },
   { timestamps: true }
 );

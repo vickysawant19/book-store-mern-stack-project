@@ -1,37 +1,73 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { selectCart, selectTotalPrice } from "../../Redux/cart/cartSlice";
 import { useForm } from "react-hook-form";
+import { useAuth } from "../../context/AuthContext";
+import { useCreateOrderMutation } from "../../Redux/order/orderApi";
+import Swal from "sweetalert2"; // Import SweetAlert
 
 const Checkout = () => {
   const [isChecked, setIsChecked] = useState(false);
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm();
 
+  const { currentUser } = useAuth();
   const cartItems = useSelector(selectCart);
   const totalPrice = useSelector(selectTotalPrice);
-  const currentUser = true;
-  const onSubmit = (data) => {
-    console.log(data);
-    const newOrder = {
-      name: data.name,
-      email: currentUser?.email,
-      address: {
-        city: data.city,
-        country: data.country,
-        state: data.state,
-        zipcode: data.zipcode,
-      },
-      phone: data.phone,
-      productsIds: cartItems.map((items) => items._id),
-      totalPrice: totalPrice,
-    };
-    console.log(newOrder);
+  const [createOrder, { data, isError }] = useCreateOrderMutation();
+  const navigate = useNavigate();
+
+  const onSubmit = async (formData) => {
+    // SweetAlert confirmation before placing the order
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to place this order?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, place it!",
+      cancelButtonText: "Cancel",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const newOrder = {
+          name: formData.name,
+          email: currentUser?.email,
+          address: {
+            city: formData.city,
+            country: formData.country,
+            state: formData.state,
+            zipcode: formData.zipcode,
+          },
+          phone: formData.phone,
+          productIds: cartItems.map((items) => items._id),
+          totalPrice: totalPrice,
+        };
+        try {
+          console.log(newOrder);
+          const res = await createOrder({ ...newOrder });
+
+          // Show success message if order is placed successfully
+          Swal.fire({
+            title: "Order Placed!",
+            text: "Your order has been placed successfully.",
+            icon: "success",
+          });
+          navigate("/orders");
+        } catch (error) {
+          console.log(error);
+          Swal.fire({
+            title: "Error",
+            text: "There was an issue placing your order. Please try again.",
+            icon: "error",
+          });
+        }
+      }
+    });
   };
 
   return (
@@ -40,12 +76,12 @@ const Checkout = () => {
         <div>
           <div>
             <h2 className="font-semibold text-xl text-gray-600 mb-2">
-              Cash On Delevary
+              Cash On Delivery
             </h2>
             <p className="text-gray-500 mb-2">
               Total Price: ${totalPrice.toFixed(2)}
             </p>
-            <p className="text-gray-500 mb-6">Items:{cartItems?.length}</p>
+            <p className="text-gray-500 mb-6">Items: {cartItems?.length}</p>
           </div>
 
           <div className="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6">
@@ -74,16 +110,16 @@ const Checkout = () => {
                   <div className="md:col-span-5">
                     <label html="email">Email Address</label>
                     <input
-                      {...register("email", { required: true })}
+                      {...register("email", { disabled: true })}
                       type="text"
                       name="email"
                       id="email"
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                      //   disabled
                       defaultValue={currentUser?.email}
                       placeholder="email@domain.com"
                     />
                   </div>
+
                   <div className="md:col-span-5">
                     <label html="phone">Phone Number</label>
                     <input
@@ -130,39 +166,6 @@ const Checkout = () => {
                         placeholder="Country"
                         className="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"
                       />
-                      <button
-                        tabIndex="-1"
-                        className="cursor-pointer outline-none focus:outline-none transition-all text-gray-300 hover:text-red-600"
-                      >
-                        <svg
-                          className="w-4 h-4 mx-2 fill-current"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <line x1="18" y1="6" x2="6" y2="18"></line>
-                          <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                      </button>
-                      <button
-                        tabIndex="-1"
-                        className="cursor-pointer outline-none focus:outline-none border-l border-gray-200 transition-all text-gray-300 hover:text-blue-600"
-                      >
-                        <svg
-                          className="w-4 h-4 mx-2 fill-current"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <polyline points="18 15 12 9 6 15"></polyline>
-                        </svg>
-                      </button>
                     </div>
                   </div>
 
@@ -176,36 +179,6 @@ const Checkout = () => {
                         placeholder="State"
                         className="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"
                       />
-                      <button className="cursor-pointer outline-none focus:outline-none transition-all text-gray-300 hover:text-red-600">
-                        <svg
-                          className="w-4 h-4 mx-2 fill-current"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <line x1="18" y1="6" x2="6" y2="18"></line>
-                          <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                      </button>
-                      <button
-                        tabIndex="-1"
-                        className="cursor-pointer outline-none focus:outline-none border-l border-gray-200 transition-all text-gray-300 hover:text-blue-600"
-                      >
-                        <svg
-                          className="w-4 h-4 mx-2 fill-current"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <polyline points="18 15 12 9 6 15"></polyline>
-                        </svg>
-                      </button>
                     </div>
                   </div>
 
@@ -221,7 +194,7 @@ const Checkout = () => {
                     />
                   </div>
 
-                  <div className="md:col-span-5 mt-3 ">
+                  <div className="md:col-span-5 mt-3">
                     <div className="inline-flex items-center">
                       <input
                         onChange={() => setIsChecked(!isChecked)}
@@ -231,14 +204,14 @@ const Checkout = () => {
                         id="billing_same"
                         className="form-checkbox"
                       />
-                      <label htmlFor="billing_same" className="ml-2 ">
-                        I am aggree to the{" "}
+                      <label htmlFor="billing_same" className="ml-2">
+                        I agree to the{" "}
                         <Link className="underline underline-offset-2 text-blue-600">
                           Terms & Conditions
                         </Link>{" "}
                         and{" "}
                         <Link className="underline underline-offset-2 text-blue-600">
-                          Shoping Policy.
+                          Shopping Policy.
                         </Link>
                       </label>
                     </div>
@@ -248,7 +221,7 @@ const Checkout = () => {
                     <div className="inline-flex items-end">
                       <button
                         disabled={!isChecked}
-                        className={` text-white font-bold py-2 px-4 rounded ${
+                        className={`text-white font-bold py-2 px-4 rounded ${
                           isChecked
                             ? "bg-blue-500 hover:bg-blue-700"
                             : "bg-gray-500 hover:bg-gray-700"

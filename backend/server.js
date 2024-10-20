@@ -5,6 +5,8 @@ import "dotenv/config";
 import cors from "cors";
 //import routes
 import bookRoutes from "./book/bookRoute.js";
+import orderRoutes from "./orders/orderRoute.js";
+import userRoute from "./users/userRoute.js";
 
 const clientOptions = {
   serverApi: { version: "1", strict: true, deprecationErrors: true },
@@ -19,13 +21,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: ["http://localhost:5173/"],
+    origin: ["http://localhost:5173"],
     credentials: true,
   })
 );
 
 //routes
 app.use("/api/books", bookRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/auth", userRoute);
 
 //mangoDb init
 async function run() {
