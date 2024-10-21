@@ -48,7 +48,6 @@ const Checkout = () => {
           totalPrice: totalPrice,
         };
         try {
-          console.log(newOrder);
           const res = await createOrder({ ...newOrder });
 
           // Show success message if order is placed successfully
