@@ -24,11 +24,16 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://book-store-mern-stack-project-m6mpwzlbs.vercel.app",
+      "https://book-store-mern-stack-project.vercel.app/",
+      "https://book-store-mern-stack-project.vercel.app",
     ],
     credentials: true,
   })
 );
+
+app.get("/", (req, res) => {
+  return res.status(200).json({ message: "Book Store Mern Project" });
+});
 
 //routes
 app.use("/api/books", bookRoutes);
