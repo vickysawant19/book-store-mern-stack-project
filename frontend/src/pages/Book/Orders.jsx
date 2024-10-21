@@ -7,7 +7,11 @@ import { getImageUrl } from "../../utils/getImage";
 
 const Orders = () => {
   const { currentUser } = useAuth();
-  const { data: books = [], isLoading: isBookLoading } = useGetBooksQuery();
+  const {
+    data: books = [],
+    isLoading: isBookLoading,
+    isError: isBookError,
+  } = useGetBooksQuery();
   const {
     data: orders = [],
     isLoading,
@@ -15,12 +19,12 @@ const Orders = () => {
   } = useGetOrderByEmailQuery(currentUser.email);
 
   if (isLoading || isBookLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error occurred during loading</div>;
+  if (isError || isBookError) return <div>Error occurred during loading</div>;
 
   return (
     <div className="container mx-auto p-6">
       <h2 className="text-2xl mb-6 font-semibold text-center">Your Orders</h2>
-      {orders && orders.length > 0 ? (
+      {orders.length > 0 ? (
         orders.map((order, index) => (
           <div
             key={order._id}
@@ -52,9 +56,10 @@ const Orders = () => {
             <div>
               <h4 className="font-semibold mb-2">Products:</h4>
               <div className="flex flex-wrap space-x-4 overflow-x-auto pb-4">
-                {order.productIds &&
+                {order.productIds.length > 0 &&
                   order.productIds.map((id) => {
                     const book = books.find(({ _id }) => _id === id);
+                    if (!book) return "";
                     return (
                       <div
                         key={id}
@@ -62,7 +67,7 @@ const Orders = () => {
                       >
                         <div className="border rounded-lg shadow-md p-4 bg-gray-50 flex flex-col items-center space-y-2">
                           <img
-                            src={getImageUrl(book.coverImage)}
+                            src={getImageUrl(book?.coverImage || "book-1.png")}
                             alt={book.title}
                             className="w-32 h-40 object-cover rounded-md mb-2"
                           />
