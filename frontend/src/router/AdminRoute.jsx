@@ -3,7 +3,6 @@ import { Navigate, Outlet } from "react-router-dom";
 
 const AdminRoute = ({ children }) => {
   const token = localStorage.getItem("token");
-  console.log("token", token);
 
   if (!token) return <Navigate to="/admin" />;
 

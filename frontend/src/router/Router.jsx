@@ -12,7 +12,6 @@ import Register from "../components/Register";
 import CartPage from "../pages/Book/CartPage";
 import Checkout from "../pages/Book/Checkout";
 import SingleBook from "../pages/Book/SingleBook";
-import AuthProvider from "../context/AuthContext";
 import ProtectedRoute from "./ProtectedRoute";
 import Orders from "../pages/Book/Orders";
 import AdminRoute from "./AdminRoute";
