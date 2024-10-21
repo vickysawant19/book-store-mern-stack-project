@@ -105,7 +105,7 @@ const deleteBook = async (req, res) => {
   try {
     const id = req.params.id;
 
-    if (!id) return res.status(400).json({ message: "id missing" });
+    if (!id) return res.status(400).json({ message: "Id missing" });
 
     const deleted = await bookModel.findByIdAndDelete(id);
     if (!deleted) {
@@ -115,6 +115,7 @@ const deleteBook = async (req, res) => {
       .status(200)
       .json({ message: "Book deleted successfully", deleted });
   } catch (error) {
+    console.log(error.message);
     return res.status(500).json({ message: error.message });
   }
 };

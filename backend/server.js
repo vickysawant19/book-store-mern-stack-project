@@ -7,6 +7,7 @@ import cors from "cors";
 import bookRoutes from "./book/bookRoute.js";
 import orderRoutes from "./orders/orderRoute.js";
 import userRoute from "./users/userRoute.js";
+import adminStats from "./stats/admin.stats.js";
 
 const clientOptions = {
   serverApi: { version: "1", strict: true, deprecationErrors: true },
@@ -30,6 +31,7 @@ app.use(
 app.use("/api/books", bookRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/auth", userRoute);
+app.use("/api/admin", adminStats);
 
 //mangoDb init
 async function run() {

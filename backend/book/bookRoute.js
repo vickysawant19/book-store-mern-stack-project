@@ -19,6 +19,6 @@ router
   .post("/add-multiple-books", addMultipleBooks)
   .post("/create-book", verifyToken, createNewBook)
   .put("/update/:id", updateBook)
-  .delete("/remove/:id", deleteBook);
+  .delete("/delete/:id", deleteBook);
 
 export default router;

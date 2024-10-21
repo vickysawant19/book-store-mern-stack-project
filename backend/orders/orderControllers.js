@@ -1,4 +1,4 @@
-import orderModel from "./ordersSchema.js";
+import orderModel from "./orderModel.js";
 
 const getAllOrders = async (req, res) => {
   try {
