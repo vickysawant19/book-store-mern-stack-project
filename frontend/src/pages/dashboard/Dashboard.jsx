@@ -4,15 +4,18 @@ import { getBaseUrl } from "../../utils/getBaseUrl";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { HiViewGridAdd } from "react-icons/hi";
 import { MdOutlineManageHistory } from "react-icons/md";
+import { useAuth } from "../../context/AuthContext";
 
 const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const { currentUser } = useAuth();
 
   const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/admin");
   };
+
   if (isLoading) return <div>Loading....</div>;
   return (
     <section className="flex md:bg-gray-100 min-h-screen overflow-hidden">
@@ -150,12 +153,17 @@ const Dashboard = () => {
             <button className="inline-flex items-center p-2 hover:bg-gray-100 focus:bg-gray-100 rounded-lg">
               <span className="sr-only">User Menu</span>
               <div className="hidden md:flex md:flex-col md:items-end md:leading-tight">
-                <span className="font-semibold">Grace Simmons</span>
+                <span className="font-semibold">
+                  {currentUser?.displayName || "Grace Simmons"}
+                </span>
                 <span className="text-sm text-gray-600">Lecturer</span>
               </div>
               <span className="h-12 w-12 ml-2 sm:ml-3 mr-2 bg-gray-100 rounded-full overflow-hidden">
                 <img
-                  src="https://randomuser.me/api/portraits/women/68.jpg"
+                  src={
+                    currentUser?.photoURL ||
+                    "https://randomuser.me/api/portraits/women/68.jpg"
+                  }
                   alt="user profile photo"
                   className="h-full w-full object-cover"
                 />

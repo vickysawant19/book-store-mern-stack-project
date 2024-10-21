@@ -3,6 +3,8 @@ import { useGetOrderByEmailQuery } from "../../Redux/order/orderApi";
 import { useAuth } from "../../context/AuthContext";
 import { useGetBooksQuery } from "../../Redux/books/bookApi";
 import { getImageUrl } from "../../utils/getImage";
+import { useSelector } from "react-redux";
+import { selectCart } from "../../Redux/cart/cartSlice";
 
 const Orders = () => {
   const { currentUser } = useAuth();
@@ -16,6 +18,8 @@ const Orders = () => {
     isLoading,
     isError,
   } = useGetOrderByEmailQuery(currentUser.email);
+
+  const cardItems = useSelector(selectCart);
 
   if (isLoading || isBookLoading) return <div>Loading...</div>;
   if (isError || isBookError) return <div>Error occurred during loading</div>;

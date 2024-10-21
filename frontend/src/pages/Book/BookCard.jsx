@@ -9,16 +9,13 @@ import {
   selectCart,
 } from "../../Redux/cart/cartSlice";
 import { TbShoppingCartExclamation } from "react-icons/tb";
+import { getImageUrl } from "../../utils/getImage";
 
 const BookCard = ({ book }) => {
   const [isInCart, setIsInCart] = useState(false);
   const cartItems = useSelector(selectCart);
 
   const dispatch = useDispatch();
-
-  const getImgUrl = () => {
-    return new URL(`../../assets/books/${book?.coverImage}`, import.meta.url);
-  };
 
   useEffect(() => {
     let found = cartItems?.find((item) => item._id === book._id);
@@ -42,7 +39,7 @@ const BookCard = ({ book }) => {
       <div className=" sm:flex-shrink-0  rounded-md sm:w-1/2 w-full ">
         <Link to={`/books/${book._id}`}>
           <img
-            src={`${getImgUrl()}`}
+            src={`${getImageUrl(book.coverImage)}`}
             alt=""
             className="w-full h-72 bg-cover p-2 rounded-md cursor-pointer hover:scale-105 transition-all duration-200"
           />

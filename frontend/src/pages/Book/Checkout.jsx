@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { selectCart, selectTotalPrice } from "../../Redux/cart/cartSlice";
@@ -68,6 +68,11 @@ const Checkout = () => {
       }
     });
   };
+  useEffect(() => {
+    if (cartItems.length === 0) {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <div className="min-h-screen p-6 bg-gray-100 flex items-center justify-center">

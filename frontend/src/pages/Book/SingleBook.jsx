@@ -28,7 +28,7 @@ const SingleBook = () => {
 
   useEffect(() => {
     const found = cartItems.find((item) => item._id === id);
-    console.log(found);
+
     if (found) {
       setInCart(true);
     } else {

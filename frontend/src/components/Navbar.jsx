@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FaBars, FaHeart, FaUser } from "react-icons/fa";
 import { FaCartShopping } from "react-icons/fa6";
 import { HiMiniBars3CenterLeft } from "react-icons/hi2";
@@ -12,6 +12,7 @@ import { useAuth } from "../context/AuthContext";
 const Navbar = () => {
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
   const cartItems = useSelector(selectCart);
+  const popup = useRef(null);
 
   const navObj = [
     {
@@ -33,8 +34,19 @@ const Navbar = () => {
   ];
   const { currentUser, logoutUser } = useAuth();
 
+  useEffect(() => {
+    let windowListner = window.addEventListener("click", (e) => {
+      if (popup.current && !popup.current.contains(e.target)) {
+        setIsDropDownOpen(false);
+      }
+    });
+
+    return window.removeEventListener("click", windowListner);
+  }, []);
+
   const handleLogout = async () => {
     await logoutUser();
+    setIsDropDownOpen(false);
   };
 
   return (
@@ -63,9 +75,10 @@ const Navbar = () => {
                 <div className="flex space-x-4">
                   <button onClick={() => setIsDropDownOpen(!isDropDownOpen)}>
                     <img
-                      src={avatorImg}
+                      ref={popup}
+                      src={currentUser?.photoURL || avatorImg}
                       className={`size-7 rounded-full ${
-                        currentUser ? "ring-2 ring-orange-500" : ""
+                        currentUser ? "ring-1 ring-gray-500" : ""
                       }`}
                     />
                   </button>

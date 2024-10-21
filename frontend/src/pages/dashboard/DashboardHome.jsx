@@ -26,6 +26,12 @@ const DashboardHome = () => {
         setLoading(false);
       } catch (error) {
         console.error("Error:", error);
+        let token = localStorage.getItem("token");
+        if (token) {
+          localStorage.removeItem("token");
+        }
+        alert("session expired! Login again.");
+        navigate("/admin");
       }
     };
 
@@ -78,7 +84,7 @@ const DashboardHome = () => {
           </div>
           <div>
             <span className="block text-2xl font-bold">
-              ${data?.totalSales}
+              ${data?.totalSales.toFixed(2)}
             </span>
             <span className="block text-gray-500">Total Sales</span>
           </div>
@@ -105,7 +111,7 @@ const DashboardHome = () => {
               {data?.trendingBooks}
             </span>
             <span className="inline-block text-xl text-gray-500 font-semibold">
-              (13%)
+              (20%)
             </span>
             <span className="block text-gray-500">
               Trending Books in This Month
@@ -298,7 +304,7 @@ const DashboardHome = () => {
         </div>
         <div className="flex flex-col row-span-3 bg-white shadow rounded-lg">
           <div className="px-6 py-5 font-semibold border-b border-gray-100">
-            Students by type of studying
+            Customer by category of Purches
           </div>
           <div className="p-4 flex-grow">
             <div className="flex items-center justify-center h-full px-4 py-24 text-gray-400 text-3xl font-semibold bg-gray-100 border-2 border-gray-200 border-dashed rounded-md">
@@ -310,22 +316,7 @@ const DashboardHome = () => {
       <section className="text-right font-semibold text-gray-500">
         <a href="#" className="text-purple-600 hover:underline">
           Recreated on Codepen
-        </a>{" "}
-        with{" "}
-        <a
-          href="https://tailwindcss.com/"
-          className="text-teal-400 hover:underline"
-        >
-          Tailwind CSS
-        </a>{" "}
-        by Azri Kahar,{" "}
-        <a
-          href="https://dribbble.com/shots/10711741-Free-UI-Kit-for-Figma-Online-Courses-DashboardHome"
-          className="text-purple-600 hover:underline"
-        >
-          original design
-        </a>{" "}
-        made by Chili Labs
+        </a>
       </section>
     </>
   );
